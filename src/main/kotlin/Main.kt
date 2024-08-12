@@ -1,4 +1,6 @@
 package org.example
+import edu.stanford.nlp.pipeline.*
+import edu.stanford.nlp.ling.CoreAnnotations
 import java.io.File
 
 fun printStatistics (wordList: List<Pair<String, Int>>) {

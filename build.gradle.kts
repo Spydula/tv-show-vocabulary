@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("edu.stanford.nlp:stanford-corenlp:4.2.2")
+    implementation("edu.stanford.nlp:stanford-corenlp:4.2.2:models")
 }
 
 tasks.test {
