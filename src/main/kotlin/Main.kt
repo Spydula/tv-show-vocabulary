@@ -1,6 +1,5 @@
 package org.example
-import edu.stanford.nlp.pipeline.*
-import edu.stanford.nlp.ling.CoreAnnotations
+import com.londogard.nlp.tokenizer.*
 import java.io.File
 
 fun printStatistics (wordList: List<Pair<String, Int>>) {
@@ -34,4 +33,7 @@ fun main() {
     val sortedWords = wordFrequency.toList().sortedByDescending { it.second }
 
     printStatistics(sortedWords)
+
+    SimpleTokenizer().split("hello, world!")
+    println(SimpleTokenizer().split("hello, world!"))
 }
