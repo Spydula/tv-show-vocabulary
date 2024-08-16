@@ -1,39 +1,61 @@
 package org.example
+
+import com.londogard.nlp.stemmer.Stemmer
+import com.londogard.nlp.utils.LanguageSupport.*
+
+import com.londogard.nlp.stopwords.Stopwords
+
 import com.londogard.nlp.tokenizer.*
+
 import java.io.File
 
-fun printStatistics (wordList: List<Pair<String, Int>>) {
-    for(index in wordList.indices)
-    {
-        val word = wordList[index].first
-        val count = wordList[index].second
-        println("$word: $count")
+class ListIsEmpty: Exception("List is null")
+
+fun splitText(text: String) : List<String> {
+    val tokenizedText = SimpleTokenizer().split(text)
+    val regex = Regex("^[a-zA-Z'`]+$")
+    val filteredWords = tokenizedText.filter { word ->
+        regex.matches(word)
+    }.map{ it.lowercase() }
+    return filteredWords
+}
+
+fun stopwordsCollection(text: List<String>, stopWordsMap: MutableMap<String, Int>) : List<String> {
+    val textWithoutStopwords = text.filter{ word ->
+        if (Stopwords.isStopword(word, en)){
+            stopWordsMap[word] = (stopWordsMap[word] ?: 0) + 1
+            false
+        }
+        else{
+            true
+        }
+    }
+    return textWithoutStopwords
+}
+
+fun wordStatistic(filteredText: List<String>, WordsMap: MutableMap<String, Int>) {
+    val stemmer = Stemmer(en)
+    filteredText.forEach() { word->
+        WordsMap[stemmer.stem(word)] = (WordsMap[stemmer.stem(word)] ?: 0) + 1
     }
 }
+
+
 
 fun main() {
     val file = File("alice.txt")
     val text = file.readText(Charsets.US_ASCII)
 
-    val wordFrequency = mutableMapOf<String, Int>()
+    val splitText = splitText(text)
+    val stopWordsMap = mutableMapOf<String, Int>() // map of Stopwords
 
-    val words = text.split(Regex("\\W+")).filter { it.isNotBlank() }
+    val filteredText = stopwordsCollection(splitText, stopWordsMap) // list of text without stopwords and lowercased
 
-    words.forEach { word ->
-        val re = Regex("[^A-Za-z0-9 ]")
-        val cleanWord = re.replace(word, "")
+    val WordsMap = mutableMapOf<String, Int>()
 
-        val lowercaseWord = cleanWord.lowercase()
+    wordStatistic(filteredText, WordsMap)
 
-        if(lowercaseWord.any{ it.isLetter() } ){
-            wordFrequency[lowercaseWord] = (wordFrequency[lowercaseWord] ?: 0) + 1
-        }
-    }
+    println(WordsMap.toList().sortedByDescending { it.second })
 
-    val sortedWords = wordFrequency.toList().sortedByDescending { it.second }
-
-    printStatistics(sortedWords)
-
-    SimpleTokenizer().split("hello, world!")
-    println(SimpleTokenizer().split("hello, world!"))
+    //println(SentencePieceTokenizer.fromLanguageSupportOrNull(sv)?.split("hej där borta, hur mår ni?"))
 }
