@@ -9,13 +9,20 @@ import com.londogard.nlp.tokenizer.*
 
 import java.io.File
 
+
+
 class ListIsEmpty: Exception("List is null")
 
-fun splitText(text: String) : List<String> {
+fun splitText(text: String, properNouns: MutableMap<String, Int>) : List<String> {
     val tokenizedText = SimpleTokenizer().split(text)
     val regex = Regex("^[a-zA-Z'`]+$")
+    tokenizedText.forEach{ word->
+        if(regex.matches(word) && word.first().isUpperCase()){
+            properNouns[word] = (properNouns[word] ?: 0) + 1
+        }
+    }
     val filteredWords = tokenizedText.filter { word ->
-        regex.matches(word)
+        regex.matches(word) && word.lowercase() == word
     }.map{ it.lowercase() }
     return filteredWords
 }
@@ -46,16 +53,22 @@ fun main() {
     val file = File("alice.txt")
     val text = file.readText(Charsets.US_ASCII)
 
-    val splitText = splitText(text)
+    val properNouns = mutableMapOf<String, Int>() // map of proper names and
+
+    val splitText = splitText(text, properNouns)
+
+    println(properNouns)
+
     val stopWordsMap = mutableMapOf<String, Int>() // map of Stopwords
 
     val filteredText = stopwordsCollection(splitText, stopWordsMap) // list of text without stopwords and lowercased
 
-    val WordsMap = mutableMapOf<String, Int>()
+    val wordsMap = mutableMapOf<String, Int>()
 
-    wordStatistic(filteredText, WordsMap)
+    wordStatistic(filteredText, wordsMap)
 
-    println(WordsMap.toList().sortedByDescending { it.second })
+    println(wordsMap.toList().sortedByDescending { it.second })
 
-    //println(SentencePieceTokenizer.fromLanguageSupportOrNull(sv)?.split("hej där borta, hur mår ni?"))
+
 }
+
