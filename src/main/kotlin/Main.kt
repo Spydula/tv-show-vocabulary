@@ -53,21 +53,30 @@ fun main() {
     val file = File("alice.txt")
     val text = file.readText(Charsets.US_ASCII)
 
-    val properNouns = mutableMapOf<String, Int>() // map of proper names and
+    val firsttry = StanfordNLPClass(text)
 
-    val splitText = splitText(text, properNouns)
+    println(firsttry.getWordList())
 
-    println(properNouns)
+    println(firsttry.getStopwords())
 
-    val stopWordsMap = mutableMapOf<String, Int>() // map of Stopwords
+    println(firsttry.getCommonWords())
 
-    val filteredText = stopwordsCollection(splitText, stopWordsMap) // list of text without stopwords and lowercased
+    println(firsttry.getProperNouns())
+//    val properNouns = mutableMapOf<String, Int>() // map of proper names and
+//
+//    val splitText = splitText(text, properNouns)
 
-    val wordsMap = mutableMapOf<String, Int>()
+    //println(properNouns)
 
-    wordStatistic(filteredText, wordsMap)
+//    val stopWordsMap = mutableMapOf<String, Int>() // map of Stopwords
+//
+//    val filteredText = stopwordsCollection(splitText, stopWordsMap) // list of text without stopwords and lowercased
+//
+//    val wordsMap = mutableMapOf<String, Int>()
+//
+//    wordStatistic(filteredText, wordsMap)
 
-    println(wordsMap.toList().sortedByDescending { it.second })
+    //println(wordsMap.toList().sortedByDescending { it.second })
 
 
 }
