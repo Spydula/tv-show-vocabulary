@@ -33,17 +33,24 @@ class StanfordNLPClass(text: String) {
 
     private fun createWordList(text: String){
         val tokenizedText = SimpleTokenizer().split(text)
-        val regex = Regex("^[a-zA-Z'`]+$")
+        val regex = Regex("^[a-zA-Z'`-]+$")
         wordList = tokenizedText.filter { word ->
             regex.matches(word)
+        }.flatMap { word ->
+            if("'" in word){
+                word.split("'")
+            }
+            else {
+                listOf(word)
+            }
         }.toMutableList()
     }
 
     private fun removeStopwords(){
         val filteredList = mutableListOf<String>()
         wordList.forEach{ word->
-            if (Stopwords.isStopword(word, en)){
-                stopwords[word] = (stopwords[word] ?: 0) + 1
+            if (Stopwords.isStopword(word, en) || Stopwords.isStopword(word.lowercase(), en)){
+                stopwords[word.lowercase()] = (stopwords[word.lowercase()] ?: 0) + 1
             }
             else{
                 filteredList.add(word)
@@ -58,7 +65,7 @@ class StanfordNLPClass(text: String) {
         wordList = document.tokens().map { it.lemma() }.toMutableList()
     }
 
-    fun categorizeWords(){
+    private fun categorizeWords(){
         val document = CoreDocument(wordList.joinToString(" "))
         pipeline.annotate(document)
 
@@ -93,14 +100,4 @@ class StanfordNLPClass(text: String) {
     fun getStopwords() : MutableMap<String, Int>{
         return stopwords
     }
-
-
-
-
-
-
-
-
-
-
 }

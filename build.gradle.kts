@@ -12,12 +12,13 @@ repositories {
 }
 
 dependencies {
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("edu.stanford.nlp:stanford-corenlp:4.5.5")
     implementation ("edu.stanford.nlp:stanford-corenlp:4.5.5:models")
     implementation ("edu.stanford.nlp:stanford-corenlp:4.5.5:models-english")
     implementation ("edu.stanford.nlp:stanford-corenlp:4.5.5:models-english-kbp")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.json:json:20210307")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("com.londogard:nlp:1.2.0-BETA2")
