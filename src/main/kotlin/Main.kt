@@ -12,5 +12,6 @@ fun main() {
     println(textAnalyzer.getStopwords())
     println(textAnalyzer.getCommonWords())
     println(textAnalyzer.getProperNouns())
+    println(textAnalyzer.getCommonWordsDefinitions())
 }
 

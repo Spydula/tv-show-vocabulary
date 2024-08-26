@@ -42,3 +42,7 @@ bin/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+## Keys ##
+gpt_api_key.txt
+oxford_dictionary_api_keys.txt

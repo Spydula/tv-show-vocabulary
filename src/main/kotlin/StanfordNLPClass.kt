@@ -1,6 +1,5 @@
 package org.example
 
-
 import edu.stanford.nlp.pipeline.CoreDocument
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.ling.CoreAnnotations
@@ -10,6 +9,7 @@ import com.londogard.nlp.tokenizer.*
 import com.londogard.nlp.utils.LanguageSupport.en
 
 import java.util.Properties
+import java.io.File
 
 class StanfordNLPClass(text: String) {
 
@@ -19,6 +19,12 @@ class StanfordNLPClass(text: String) {
     private val properNouns: MutableSet<String> = mutableSetOf()
     private val commonWords: MutableMap<String, Int> = mutableMapOf()
     private val stopwords: MutableMap<String, Int> = mutableMapOf()
+    private val commonWordsDefinitions: MutableMap<String, String> = mutableMapOf()
+
+    private val lines = File("oxford_dictionary_api_keys.txt").readLines()
+    private val appId = lines[0]
+    private val appKey = lines[1]
+    private val OxfordDictionary = OxfordDictionaryClass(appId, appKey)
 
     init {
         val props = Properties().apply {
@@ -29,6 +35,7 @@ class StanfordNLPClass(text: String) {
         removeStopwords()
         lemmatizeWordList()
         categorizeWords()
+        getDefinitions()
     }
 
     private fun createWordList(text: String){
@@ -85,6 +92,16 @@ class StanfordNLPClass(text: String) {
         }
     }
 
+    private fun getDefinitions(){
+        commonWords.keys.forEach{ key->
+            val definition = OxfordDictionary.getWordDefinition(key)
+            if(definition != null){
+                commonWordsDefinitions.putIfAbsent(key, definition)
+            }
+
+        }
+    }
+
     fun getWordList() : MutableList<String>{
         return wordList
     }
@@ -99,5 +116,9 @@ class StanfordNLPClass(text: String) {
 
     fun getStopwords() : MutableMap<String, Int>{
         return stopwords
+    }
+
+    fun getCommonWordsDefinitions() : MutableMap<String, String>{
+        return commonWordsDefinitions
     }
 }
